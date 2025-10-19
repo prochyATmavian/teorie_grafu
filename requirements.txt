@@ -1,0 +1,10 @@
+# Požadavky pro rozpoznávač grafů
+
+# Základní knihovny (volitelné - pouze pro grafickou vizualizaci)
+matplotlib>=3.5.0
+networkx>=2.6.0
+graphviz>=0.20.0
+
+# Poznámka: Program funguje i BEZ těchto knihoven!
+# Bez nich se použije textová vizualizace.
+

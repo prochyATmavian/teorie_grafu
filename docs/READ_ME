@@ -1,0 +1,107 @@
+ROZPOZNÁVAČ GRAFŮ - Návod k použití
+=====================================
+
+SPUŠTĚNÍ PROGRAMU:
+------------------
+python3 run.py <soubor_s_grafem.tg>
+
+Příklad:
+python3 run.py /Users/prochy/Downloads/grafy/01.tg
+
+VOLITELNÁ GRAFICKÁ VIZUALIZACE:
+--------------------------------
+pip install matplotlib networkx
+# nebo
+pip install graphviz
+
+DOKUMENTACE:
+------------
+Podrobná dokumentace všech funkcí je v souboru DOKUMENTACE.md
+
+=====================================
+
+Cheatsheet + vysvětlení funkcí
+
+Formát zadání grafu:
+
+Standartní graf:
+u A;
+u B;
+h A > B 1 :h1;
+u C;
+h B > C 1 :h2;
+u D;
+h A > D 2 :h3;
+u E;
+h A < E 2 :h4;
+h B < E 3 :h5;
+h C > E 3 :h6;
+h D > E 4 :h8;
+u F;
+h C > F 4 :h7;
+h E > F 5 :h9;
+u G;
+h D < G 5 :h10;
+h E > G 6 :h11;
+u H;
+h H > E 6 :h12;
+h F > H 7 :h13;
+h G < H 7 :h14;
+
+u A; ---->>> symbolizuje uzel A v grafu
+h A > B 1 :h1; ---->>> symbolizuje hranu z uzlu A do uzlu B s váhou h1
+
+
+Budu muset umět určit:
+a) ohodnocený, ---->>> pokud má hrany váhy
+b) orientovaný, ---->>> pokud májí hrany směr
+c) souvislý, ---->>> pokud z každého uzlu existuje cesta do každého ostatního uzlu Silně
+    silně -> ze všech uzlů všude
+    slabě -> z nějakého uzlu do všech uzlů
+d) prostý, ---->>> pokud neobsahuje vícenásobné hrany
+e) jednoduchý, ---->>> pokud neobsahuje smyčky ani vícenásobné hrany (prostý bez smyček)
+f) rovinný, ---->>> pokud je možné nakreslit graf na rovinu bez křížení hran
+g) konečný, ---->>> pokud má konečný počet uzlů a hran
+h) úplný, ---->>> pokud každý uzel je spojen s každým ostatním uzlem
+i) regulární, ---->>> pokud mají všechny uzly stejný stupeň
+j) bipartitní, ---->>> pokud lze graf rozdělit na dvě disjunktní podmnožiny uzlů, 
+                       tak že žádné dva uzly z téže podmnožiny nemají společnou hranu
+                       hledání pomocí cyklů liché délky
+
+k) U+(F) -> následník uzlu F
+l) U-(F) -> předchůdce uzlu F
+m) U(F) -> soused uzlu F (všichni předchůdci a následníci uzlu F)
+n) H+(C) -> výstupní okolí uzlu C (všechny hrany, které vedou z uzlu C)
+o) H-(C) -> vstupní okolí uzlu C (všechny hrany, které vedou do uzlu C)
+p) H(C) -> okolí uzlu C (všechny hrany, které vedou z nebo do uzlu C)
+q) d+(A) -> výstupní stupeň uzlu A
+r) d-(A) -> vstupní stupeň uzlu A
+s) d(A) -> stupeň uzlu A
+
+
+Sestrojit matici:
+a) matice sousednosti
+b) znaménkovou matici podle matice sousednosti
+c) druhou a třetí mocninu matice sousednosti (možná i další mocniny)
+d) matici incidence
+e) matici délek
+f) matici předchůdců
+g) tabulku incidentních hra
+h) seznam sousedů
+i) seznam uzlů a hran
+
+
+
+Pokyny k implementaci rozeznávače:
+Je možné využít libovolný programovací nebo skriptovací jazyk (včetně případných knihoven), který lze přeložit na školních
+serverech akela nebo kiwi. Pozor! Kód je nutné mít navržený tak, aby jej bylo možné upravovat a překládat na místě.
+Graf bude zadán výhradně v textovém souboru s následující strukturou:
+u identifikátor [ohodnocení ];
+h uzel1 (< ∣- ∣ >) uzel2 [ohodnocení ] [:označení ];
+Význam jednotlivých prvků:
+• Identifikátor uzlu může být libovolný řetězec.
+• Ohodnocení uzlu nebo hrany může být celé i desetinné číslo a může být kladné i záporné.
+• Označení hrany může být libovolný řetězec.
+Pořadí řádků ve vstupním souboru může být libovolné až na dvě výjimky:
+1. Hrana může být použita až v okamžiku, kdy existují potřebné uzly.
+2. Uzly binárního stromu jsou vždy zadávány chronologicky po jednotlivých patrech. Hvězdička značí „vynechaný“ uzel.

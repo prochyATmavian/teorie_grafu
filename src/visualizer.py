@@ -42,10 +42,8 @@ class TextVisualizer:
             parts = []
             
             if edge.directed:
-                if edge.reverse:
-                    parts.append(f"  {edge.node1} <-- {edge.node2}")
-                else:
-                    parts.append(f"  {edge.node1} --> {edge.node2}")
+                # Zobrazujeme vždy ve směru toku (source --> target)
+                parts.append(f"  {edge.source} --> {edge.target}")
             else:
                 parts.append(f"  {edge.node1} --- {edge.node2}")
             
@@ -214,12 +212,21 @@ def try_matplotlib_visualization(graph, output_file='graph_output.png'):
         
         # Pro grafy s vícenásobnými hranami používáme connectionstyle
         if has_multiple:
-            nx.draw_networkx_edges(G, pos, width=2, alpha=0.6, 
-                                   arrows=is_directed, arrowsize=20,
-                                   connectionstyle='arc3,rad=0.1')
+            if is_directed:
+                nx.draw_networkx_edges(G, pos, width=2, alpha=0.6, 
+                                       arrows=True, arrowsize=20,
+                                       connectionstyle='arc3,rad=0.1')
+            else:
+                nx.draw_networkx_edges(G, pos, width=2, alpha=0.6, 
+                                       arrows=False,
+                                       connectionstyle='arc3,rad=0.1')
         else:
-            nx.draw_networkx_edges(G, pos, width=2, alpha=0.6, 
-                                   arrows=is_directed, arrowsize=20)
+            if is_directed:
+                nx.draw_networkx_edges(G, pos, width=2, alpha=0.6, 
+                                       arrows=True, arrowsize=20)
+            else:
+                nx.draw_networkx_edges(G, pos, width=2, alpha=0.6, 
+                                       arrows=False)
         
         # Popisky uzlů
         nx.draw_networkx_labels(G, pos, font_size=12, font_weight='bold')

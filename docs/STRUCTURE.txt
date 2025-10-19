@@ -1,0 +1,99 @@
+rozeznavac_grafu/
+│
+├── 🚀 analyze.sh                  START HERE (Linux/Mac)
+├── 🚀 analyze.bat                 START HERE (Windows)
+├── 📖 README.md                   Hlavní dokumentace
+├── 📖 START_HERE.txt              Úvodní průvodce
+├── 📦 requirements.txt            Python závislosti
+│
+├── 📂 bin/ (6)                    Spouštěcí wrappery
+│   ├── analyze_properties.sh
+│   ├── analyze_properties.bat
+│   ├── analyze_matrices.sh
+│   ├── analyze_matrices.bat
+│   ├── run.sh
+│   └── run.bat
+│
+├── 📂 scripts/ (3)                Python programy
+│   ├── analyze_properties.py     Vlastnosti + uzly (a-s)
+│   ├── analyze_matrices.py       Matice (interaktivní a-e, h)
+│   └── run.py                    Kompletní analýza
+│
+├── 📂 src/ (6)                    Zdrojové moduly
+│   ├── __init__.py
+│   ├── parser.py                 GraphParser, Node, Edge
+│   ├── graph.py                  Graph (BFS, stupně, ...)
+│   ├── analyzer.py               GraphAnalyzer (vlastnosti)
+│   ├── matrices.py               MatrixBuilder (matice)
+│   └── visualizer.py             Vizualizace
+│
+├── 📂 data/                       Vstupní data
+│   └── grafy/ (21)               Grafové soubory .tg
+│       ├── 01.tg ... 20.tg
+│       └── custom*.tg
+│
+├── 📂 output/                     Výstupy
+│   └── vykreslene_grafy/         PNG obrázky grafů
+│
+├── 📂 docs/ (14)                  Dokumentace
+│   ├── QUICKSTART.md             Rychlý start
+│   ├── WINDOWS.md                Windows návod
+│   ├── WINDOWS_README.txt        Windows quick ref
+│   ├── INTERAKTIVNI_MATICE.md    Interaktivní matice
+│   ├── MATICE.md                 Technické info matic
+│   ├── POUZITI.md                Detailní návod
+│   ├── DOKUMENTACE.md            Technická dokumentace
+│   ├── INSTALACE_VENV.md         Instalace
+│   ├── STRUKTURA.md              Původní struktura
+│   ├── NOVA_STRUKTURA.md         Nová struktura
+│   ├── ZMENY.md                  Historie změn
+│   ├── PREHLED_SOUBORU.txt       Přehled souborů
+│   ├── DEMO_MATICE.txt           Demo příklady
+│   ├── README.md                 Původní README
+│   └── READ_ME                   Původní poznámky
+│
+├── 📂 tests/ (2)                  Testovací skripty
+│   ├── test_interactive_matrix.sh
+│   └── test_interactive_matrix.bat
+│
+├── 📂 tools/ (5)                  Pomocné nástroje
+│   ├── install_libs.py
+│   ├── test_venv.py
+│   ├── setup_venv.sh
+│   ├── run_with_venv.sh
+│   └── vykresli_graf.py
+│
+└── 📂 venv/                       Virtual environment
+    ├── bin/                      Linux/Mac
+    └── Scripts/                  Windows
+
+═══════════════════════════════════════════════════════════════
+
+📊 STATISTIKA:
+
+  ✓ Kořenové soubory:    5 (analyze.sh, analyze.bat, README.md, 
+                            START_HERE.txt, requirements.txt)
+  ✓ Složky:              9 (bin/, scripts/, src/, data/, output/,
+                            docs/, tests/, tools/, venv/)
+  ✓ Python moduly:       6 (src/)
+  ✓ Python programy:     3 (scripts/)
+  ✓ Wrapper skripty:     6 (bin/)
+  ✓ Testovací skripty:   2 (tests/)
+  ✓ Dokumentační MD:     9 (docs/)
+  ✓ Dokumentační TXT:    5 (docs/ + kořen)
+  ✓ Testovací grafy:    21 (data/grafy/)
+
+═══════════════════════════════════════════════════════════════
+
+🎯 POUŽITÍ:
+
+  1. ./analyze.sh                    (Linux/Mac)
+     analyze.bat                      (Windows)
+
+  2. ./bin/analyze_matrices.sh data/grafy/01.tg
+     bin\analyze_matrices.bat data\grafy\01.tg
+
+  3. ./venv/bin/python scripts/analyze_properties.py data/grafy/01.tg A
+
+═══════════════════════════════════════════════════════════════
+

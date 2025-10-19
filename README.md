@@ -1,89 +1,125 @@
-# Rozpoznávač grafů
+# 🔍 Rozpoznávač grafů
 
-Program pro analýzu grafů - detekci vlastností, výpočet charakteristik uzlů a vytváření matic.
+Profesionální nástroj pro **analýzu grafů** - detekci vlastností, výpočet charakteristik uzlů a vytváření matic.
+
+> 📚 **Projekt pro předmět Teorie grafů**
 
 ## 📁 Struktura projektu
 
 ```
 rozeznavac_grafu/
-├── src/                      # Zdrojové kódy knihoven
-│   ├── __init__.py          # Inicializační soubor balíčku
-│   ├── parser.py            # Parser pro načítání grafů z .tg souborů
-│   ├── graph.py             # Třída Graph pro reprezentaci grafu
-│   ├── analyzer.py          # GraphAnalyzer pro analýzu vlastností
-│   ├── matrices.py          # MatrixBuilder pro vytváření matic
-│   └── visualizer.py        # Nástroje pro vizualizaci grafů
 │
-├── scripts/                  # Spouštěcí skripty
-│   ├── analyze_properties.py  # Analýza vlastností a uzlů
-│   ├── analyze_matrices.py    # Analýza matic a seznamů
-│   └── run.py                 # Kompletní analýza (původní)
+├── 📂 src/                   Zdrojové kódy (6 modulů)
+│   ├── __init__.py          Export tříd a funkcí
+│   ├── parser.py            Parser .tg souborů
+│   ├── graph.py             Třída Graph
+│   ├── analyzer.py          Analýza vlastností (a-j)
+│   ├── matrices.py          Vytváření matic (a-e, h)
+│   └── visualizer.py        Vizualizace grafů
 │
-├── data/                     # Vstupní data
-│   └── grafy/               # Grafové soubory .tg
-│       ├── 01.tg
-│       ├── 02.tg
-│       └── ...
+├── 📂 scripts/               Python programy (3 skripty)
+│   ├── analyze_properties.py  Vlastnosti + uzly
+│   ├── analyze_matrices.py    Matice (interaktivní)
+│   └── run.py                 Kompletní analýza
 │
-├── output/                   # Výstupy
-│   └── vykreslene_grafy/    # Vykreslené grafy (.png)
+├── 📂 bin/                   Spouštěcí wrappery
+│   ├── *.sh                 Linux/Mac (3 soubory)
+│   └── *.bat                Windows (3 soubory)
 │
-├── docs/                     # Dokumentace
-│   ├── README.md            # Základní dokumentace
-│   ├── POUZITI.md           # Návod k použití
-│   ├── DOKUMENTACE.md       # Podrobná dokumentace
-│   ├── INSTALACE_VENV.md    # Návod na instalaci
-│   └── READ_ME              # Původní poznámky
+├── 📂 data/                  Vstupní data
+│   └── grafy/               21 grafových souborů .tg
 │
-├── tools/                    # Pomocné nástroje
-│   ├── install_libs.py      # Instalace knihoven
-│   ├── test_venv.py         # Test virtuálního prostředí
-│   ├── setup_venv.sh        # Skript pro vytvoření venv
-│   └── run_with_venv.sh     # Spuštění s venv
+├── 📂 output/                Výstupy
+│   └── vykreslene_grafy/    PNG obrázky grafů
 │
-├── venv/                     # Virtual environment (Python)
-├── requirements.txt          # Závislosti projektu
-└── README.md                # Tento soubor
+├── 📂 docs/                  Dokumentace (9+ souborů)
+│   ├── README.md, POUZITI.md
+│   ├── INTERAKTIVNI_MATICE.md, MATICE.md
+│   ├── WINDOWS.md, STRUKTURA.md
+│   └── ...
+│
+├── 📂 tests/                 Testovací skripty
+│   ├── test_interactive_matrix.sh
+│   └── test_interactive_matrix.bat
+│
+├── 📂 tools/                 Pomocné nástroje
+│   ├── install_libs.py, test_venv.py
+│   ├── setup_venv.sh, run_with_venv.sh
+│   └── vykresli_graf.py
+│
+├── 📂 venv/                  Virtual environment
+│
+├── 📄 analyze.sh            🚀 Hlavní spouštěč (Linux/Mac)
+├── 📄 analyze.bat           🚀 Hlavní spouštěč (Windows)
+├── 📄 README.md             📖 Tento soubor
+└── 📄 requirements.txt      📦 Python závislosti
 ```
 
 ## 🚀 Rychlý start
 
-### 1. Instalace závislostí
+### Linux / Mac
 
 ```bash
-# Vytvoření virtuálního prostředí
-python3 -m venv venv
-
-# Aktivace prostředí
-source venv/bin/activate  # Linux/Mac
-# nebo
-venv\Scripts\activate     # Windows
-
-# Instalace závislostí
-pip install -r requirements.txt
-```
-
-Nebo použijte pomocný skript:
-```bash
+# 1. Instalace
 bash tools/setup_venv.sh
+
+# 2. Spuštění
+./analyze.sh
 ```
+
+### Windows
+
+```cmd
+REM 1. Instalace
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+deactivate
+
+REM 2. Spuštění
+analyze.bat
+```
+
+**Podrobnosti:** [QUICKSTART.md](QUICKSTART.md) | [docs/WINDOWS.md](docs/WINDOWS.md)
 
 ### 2. Použití
 
-#### Analýza vlastností grafu a uzlů
+#### Linux / Mac
+
 ```bash
-./venv/bin/python scripts/analyze_properties.py data/grafy/02.tg
-./venv/bin/python scripts/analyze_properties.py data/grafy/02.tg A B C
+# Vlastnosti + uzly
+./bin/analyze_properties.sh data/grafy/02.tg A B C
+
+# Matice (interaktivní)
+./bin/analyze_matrices.sh data/grafy/02.tg
+
+# Matice (všechny)
+./bin/analyze_matrices.sh data/grafy/02.tg --all
+
+# Matice (index [0][1])
+./bin/analyze_matrices.sh data/grafy/02.tg --all 0 1
+
+# Kompletní analýza
+./bin/run.sh data/grafy/02.tg A B
 ```
 
-#### Analýza matic
-```bash
-./venv/bin/python scripts/analyze_matrices.py data/grafy/02.tg
-```
+#### Windows
 
-#### Kompletní analýza
-```bash
-./venv/bin/python scripts/run.py data/grafy/02.tg A B
+```cmd
+REM Vlastnosti + uzly
+bin\analyze_properties.bat data\grafy\02.tg A B C
+
+REM Matice (interaktivní)
+bin\analyze_matrices.bat data\grafy\02.tg
+
+REM Matice (všechny)
+bin\analyze_matrices.bat data\grafy\02.tg --all
+
+REM Matice (index [0][1])
+bin\analyze_matrices.bat data\grafy\02.tg --all 0 1
+
+REM Kompletní analýza
+bin\run.bat data\grafy\02.tg A B
 ```
 
 ## 📚 Dokumentace
@@ -162,6 +198,29 @@ Program vytváří:
 - Matice sousednosti, incidence, délek
 - Detailní informace o uzlech
 
+## 🔧 Spouštěcí soubory
+
+### Hlavní spouštěče (kořenový adresář)
+- `analyze.sh` / `analyze.bat` - 🚀 **Interaktivní menu** (doporučeno)
+
+### Přímé spuštění (bin/)
+
+**Linux / Mac:**
+- `bin/analyze_properties.sh` - Vlastnosti + uzly
+- `bin/analyze_matrices.sh` - Matice (interaktivní)
+- `bin/run.sh` - Kompletní analýza
+
+**Windows:**
+- `bin\analyze_properties.bat` - Vlastnosti + uzly
+- `bin\analyze_matrices.bat` - Matice (interaktivní)
+- `bin\run.bat` - Kompletní analýza
+
+### Testy (tests/)
+- `tests/test_interactive_matrix.sh` - Testy (Linux/Mac)
+- `tests/test_interactive_matrix.bat` - Testy (Windows)
+
+**Windows dokumentace:** [docs/WINDOWS.md](docs/WINDOWS.md)
+
 ## 🐛 Řešení problémů
 
 Pokud nefunguje grafické vykreslování:
@@ -169,7 +228,9 @@ Pokud nefunguje grafické vykreslování:
 pip install --upgrade matplotlib networkx numpy
 ```
 
-Pro více informací viz [docs/INSTALACE_VENV.md](docs/INSTALACE_VENV.md)
+Pro více informací viz:
+- [docs/INSTALACE_VENV.md](docs/INSTALACE_VENV.md)
+- [docs/WINDOWS.md](docs/WINDOWS.md) - Pro Windows
 
 ## 👨‍💻 Autor
 

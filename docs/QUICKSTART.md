@@ -24,18 +24,23 @@ source venv/bin/activate
 
 **Vlastnosti grafu + uzly:**
 ```bash
-./venv/bin/python scripts/analyze_properties.py data/grafy/02.tg
-./venv/bin/python scripts/analyze_properties.py data/grafy/02.tg A B C
+./bin/analyze_properties.sh data/grafy/02.tg
+./bin/analyze_properties.sh data/grafy/02.tg A B C
 ```
 
-**Matice:**
+**Matice (interaktivní výběr):**
 ```bash
-./venv/bin/python scripts/analyze_matrices.py data/grafy/02.tg
+# Program se ptá, kterou matici a jestli konkrétní index:
+./bin/analyze_matrices.sh data/grafy/02.tg
+
+# Nebo všechny matice najednou:
+./bin/analyze_matrices.sh data/grafy/02.tg --all
+./bin/analyze_matrices.sh data/grafy/02.tg --all 0 1
 ```
 
 **Kompletní analýza:**
 ```bash
-./venv/bin/python scripts/run.py data/grafy/02.tg A B
+./bin/run.sh data/grafy/02.tg A B
 ```
 
 ## 📝 Formát souborů

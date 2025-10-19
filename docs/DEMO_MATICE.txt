@@ -1,0 +1,102 @@
+
+═══════════════════════════════════════════════════════════════
+            DEMO: INTERAKTIVNÍ VÝBĚR MATIC
+═══════════════════════════════════════════════════════════════
+
+🎯 ZÁKLADNÍ POUŽITÍ:
+
+./venv/bin/python scripts/analyze_matrices.py data/grafy/01.tg
+
+Program se vás zeptá:
+
+1) Kterou matici chcete sestavit?
+   → Zadejte: a, b, c, d, e, h, nebo *
+
+2) Chcete konkrétní index?
+   → Zadejte: a (ano) nebo n (ne)
+   
+3) Pokud ano - Zadejte řádek a sloupec:
+   → Např: 0 a 1 pro index [0][1]
+
+═══════════════════════════════════════════════════════════════
+
+📝 PŘÍKLAD 1: Matice sousednosti, celá matice
+
+$ ./venv/bin/python scripts/analyze_matrices.py data/grafy/01.tg
+
+Vaše volba (a/b/c/d/e/h/*): a
+Chcete zobrazit konkrétní index matice? (a/n): n
+
+VÝSLEDEK:
+a) Matice sousednosti:
+Rozměry: 8 řádků × 8 sloupců
+------------------------------------------------------------
+       A    B    C    D    E    F    G    H
+  A:   0    1    0    1    0    0    0    0
+  ...
+
+═══════════════════════════════════════════════════════════════
+
+📝 PŘÍKLAD 2: Matice délek, index [0][1]
+
+$ ./venv/bin/python scripts/analyze_matrices.py data/grafy/01.tg
+
+Vaše volba (a/b/c/d/e/h/*): e
+Chcete zobrazit konkrétní index matice? (a/n): a
+Zadejte řádek (od 0): 0
+Zadejte sloupec (od 0): 1
+
+VÝSLEDEK:
+e) Matice délek (Floyd-Warshall)[A][B] = 1.0
+   (index: [0][1])
+
+INTERPRETACE: Nejkratší cesta z A do B má délku 1.0
+
+═══════════════════════════════════════════════════════════════
+
+📝 PŘÍKLAD 3: Všechny matice, index [2][4]
+
+$ ./venv/bin/python scripts/analyze_matrices.py data/grafy/01.tg
+
+Vaše volba (a/b/c/d/e/h/*): *
+Chcete zobrazit konkrétní index matice? (a/n): a
+Zadejte řádek (od 0): 2
+Zadejte sloupec (od 0): 4
+
+VÝSLEDEK:
+a) Matice sousednosti[C][E] = 1
+b) Znaménková matice[C][E] = 1
+c) Matice sousednosti^2[C][E] = 0
+c) Matice sousednosti^3[C][E] = 1
+d) Matice incidence[C][e4] = 0
+e) Matice délek (Floyd-Warshall)[C][E] = 3.0
+
+═══════════════════════════════════════════════════════════════
+
+🚀 RYCHLÝ PŘÍSTUP (bez interakce):
+
+# Všechny matice, celé:
+./venv/bin/python scripts/analyze_matrices.py data/grafy/01.tg --all
+
+# Všechny matice, index [0][1]:
+./venv/bin/python scripts/analyze_matrices.py data/grafy/01.tg --all 0 1
+
+═══════════════════════════════════════════════════════════════
+
+💡 TIPY:
+
+1. Uzly jsou seřazeny abecedně (A=0, B=1, C=2, ...)
+2. Indexování začíná od 0 (jako v programování)
+3. Pro matici incidence jsou sloupce hrany (e0, e1, e2, ...)
+4. Neplatný index zobrazí chybovou hlášku
+5. Stiskněte Ctrl+C pro přerušení
+
+═══════════════════════════════════════════════════════════════
+
+📚 VÍCE INFORMACÍ:
+
+- docs/INTERAKTIVNI_MATICE.md  (detailní návod s příklady)
+- docs/MATICE.md               (technické informace)
+
+═══════════════════════════════════════════════════════════════
+

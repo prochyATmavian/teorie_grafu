@@ -164,35 +164,53 @@ class MatrixBuilder:
         
         Pro neorientovaný graf:
         - M[i][j] = 1 pokud uzel i je incidentní s hranou j
+        - M[i][j] = 2 pokud hrana j je smyčka na uzlu i
         
         Pro orientovaný graf:
         - M[i][j] = 1 pokud hrana j vychází z uzlu i
         - M[i][j] = -1 pokud hrana j vstupuje do uzlu i
+        - M[i][j] = 2 pokud hrana j je smyčka na uzlu i
         
         Returns:
             tuple: (matice, seznam uzlů, seznam hran)
         """
         n = len(self.node_list)
-        m = len(self.graph.edges_list)
         
+        # Seřadíme hrany podle jejich označení (label)
+        # Hrany s labelem seřadíme alfabeticky, hrany bez labelu dáme na konec
+        edges_sorted = sorted(
+            self.graph.edges_list,
+            key=lambda e: (e.label is None, e.label if e.label else "")
+        )
+        
+        m = len(edges_sorted)
         matrix = [[0] * m for _ in range(n)]
         
-        for j, edge in enumerate(self.graph.edges_list):
+        for j, edge in enumerate(edges_sorted):
             if edge.directed:
                 # Orientovaná hrana
                 src_idx = self.node_index[edge.source]
                 tgt_idx = self.node_index[edge.target]
-                matrix[src_idx][j] = 1   # Výstupní
-                matrix[tgt_idx][j] = -1  # Vstupní
+                
+                if src_idx == tgt_idx:
+                    # Smyčka - označíme jako 2
+                    matrix[src_idx][j] = 2
+                else:
+                    matrix[src_idx][j] = 1   # Výstupní
+                    matrix[tgt_idx][j] = -1  # Vstupní
             else:
                 # Neorientovaná hrana
                 i = self.node_index[edge.node1]
                 j_idx = self.node_index[edge.node2]
-                matrix[i][j] = 1
-                if i != j_idx:  # Pokud není smyčka
+                
+                if i == j_idx:
+                    # Smyčka - označíme jako 2
+                    matrix[i][j] = 2
+                else:
+                    matrix[i][j] = 1
                     matrix[j_idx][j] = 1
         
-        return matrix, self.node_list, self.graph.edges_list
+        return matrix, self.node_list, edges_sorted
     
     def distance_matrix(self):
         """

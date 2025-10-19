@@ -221,7 +221,7 @@ def analyze_graph(filepath, visualize=True, nodes_to_display=None):
     
     # Matice incidence
     inc_matrix, nodes_inc, edges_inc = builder.incidence_matrix()
-    edge_labels = [f"e{i}" for i in range(len(edges_inc))]
+    edge_labels = [edge.label if edge.label else f"e{i}" for i, edge in enumerate(edges_inc)]
     print_matrix(inc_matrix, nodes_inc, edge_labels, "d) Matice incidence")
     
     # Matice délek

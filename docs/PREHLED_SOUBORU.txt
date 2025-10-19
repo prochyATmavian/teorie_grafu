@@ -1,0 +1,134 @@
+
+═══════════════════════════════════════════════════════════════
+              PŘEHLED SOUBORŮ PROJEKTU
+═══════════════════════════════════════════════════════════════
+
+📂 KOŘENOVÝ ADRESÁŘ:
+
+SPOUŠTĚCÍ SKRIPTY:
+  analyze.sh                    Interaktivní menu (Linux/Mac)
+  analyze.bat                   Interaktivní menu (Windows)
+  analyze_properties.bat        Vlastnosti (Windows)
+  analyze_matrices.bat          Matice (Windows)
+  run.bat                       Kompletní analýza (Windows)
+  test_interactive_matrix.sh    Testy (Linux/Mac)
+  test_interactive_matrix.bat   Testy (Windows)
+
+DOKUMENTACE:
+  README.md                     Hlavní dokumentace
+  QUICKSTART.md                 Rychlý start
+  WINDOWS_README.txt            Windows quick reference
+  ZMENY.md                      Historie změn
+  PREHLED_SOUBORU.txt          Tento soubor
+
+KONFIGURACE:
+  requirements.txt              Python závislosti
+  .gitignore                    Git ignore pravidla
+
+═══════════════════════════════════════════════════════════════
+
+📂 src/ - ZDROJOVÉ KÓDY (6 modulů):
+
+  __init__.py                   Export tříd
+  parser.py                     Parser grafů (Node, Edge, GraphParser)
+  graph.py                      Třída Graph
+  analyzer.py                   GraphAnalyzer (vlastnosti a-j)
+  matrices.py                   MatrixBuilder (matice a-e, h)
+  visualizer.py                 Vizualizace grafů
+
+═══════════════════════════════════════════════════════════════
+
+📂 scripts/ - SPOUŠTĚCÍ PYTHON SKRIPTY (3 programy):
+
+  analyze_properties.py         Vlastnosti + uzly (a-j, k-s)
+  analyze_matrices.py           Matice + indexování (a-e, h)
+  run.py                        Kompletní analýza
+
+═══════════════════════════════════════════════════════════════
+
+📂 data/ - VSTUPNÍ DATA:
+
+  grafy/                        Grafové soubory .tg
+    ├── 01.tg až 20.tg         20 testovacích grafů
+    └── custom*.tg              Vlastní grafy
+
+═══════════════════════════════════════════════════════════════
+
+📂 output/ - VÝSTUPNÍ SOUBORY:
+
+  vykreslene_grafy/             PNG obrázky grafů
+    └── graf_*.png              Vykreslené grafy
+
+═══════════════════════════════════════════════════════════════
+
+📂 docs/ - DOKUMENTACE (9 souborů):
+
+ZÁKLADNÍ:
+  README.md                     Původní README
+  POUZITI.md                    Detailní návod k použití
+  INTERAKTIVNI_MATICE.md        Interaktivní výběr matic
+  MATICE.md                     Technické info o maticích
+  DEMO_MATICE.txt               Demo příklady
+
+INSTALACE:
+  INSTALACE_VENV.md             Instalace virtuálního prostředí
+  WINDOWS.md                    Kompletní Windows návod
+
+TECHNICKÉ:
+  STRUKTURA.md                  Struktura projektu
+  DOKUMENTACE.md                Technická dokumentace
+  READ_ME                       Původní poznámky
+
+═══════════════════════════════════════════════════════════════
+
+📂 tools/ - POMOCNÉ NÁSTROJE:
+
+  install_libs.py               Instalace knihoven
+  test_venv.py                  Test venv
+  setup_venv.sh                 Vytvoření venv (Linux/Mac)
+  run_with_venv.sh              Wrapper s venv (Linux/Mac)
+  vykresli_graf.py              Pomocník pro vykreslení
+
+═══════════════════════════════════════════════════════════════
+
+📂 venv/ - VIRTUÁLNÍ PROSTŘEDÍ:
+
+  bin/                          Spustitelné soubory (Linux/Mac)
+  Scripts/                      Spustitelné soubory (Windows)
+  lib/                          Nainstalované knihovny
+
+═══════════════════════════════════════════════════════════════
+
+🔢 STATISTIKY:
+
+  Zdrojových modulů:     6 (src/)
+  Spouštěcích skriptů:  10 (7 bat + 3 sh)
+  Python programů:       3 (scripts/)
+  Dokumentačních MD:     9 (docs/)
+  Testovacích grafů:    21 (data/grafy/)
+
+═══════════════════════════════════════════════════════════════
+
+🚀 JAK ZAČÍT:
+
+LINUX/MAC:
+  1. bash tools/setup_venv.sh
+  2. ./analyze.sh
+
+WINDOWS:
+  1. python -m venv venv
+  2. venv\Scripts\activate
+  3. pip install -r requirements.txt
+  4. deactivate
+  5. analyze.bat
+
+═══════════════════════════════════════════════════════════════
+
+📚 DOKUMENTACE:
+
+ZAČÁTEČNÍK → WINDOWS_README.txt nebo QUICKSTART.md
+POKROČILÝ  → docs/INTERAKTIVNI_MATICE.md
+VÝVOJÁŘ    → docs/STRUKTURA.md
+
+═══════════════════════════════════════════════════════════════
+

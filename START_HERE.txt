@@ -1,0 +1,74 @@
+╔══════════════════════════════════════════════════════════════╗
+║           🔍 ROZPOZNÁVAČ GRAFŮ - START HERE                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+🚀 RYCHLÝ START:
+
+  LINUX / MAC:
+    1. bash tools/setup_venv.sh
+    2. ./analyze.sh
+       → Vyberte: 1) Vlastnosti, 2) Matice, 3) Kompletní
+
+  WINDOWS:
+    1. python -m venv venv
+    2. venv\Scripts\activate
+    3. pip install -r requirements.txt
+    4. deactivate
+    5. analyze.bat
+       → Vyberte: 1) Vlastnosti, 2) Matice, 3) Kompletní
+
+══════════════════════════════════════════════════════════════
+
+📂 CO JE KDE:
+
+  analyze.sh / analyze.bat  → 🚀 ZAČNĚTE TADY (interaktivní menu)
+  
+  bin/                      → Rychlé spuštění programů
+  scripts/                  → Python programy
+  src/                      → Zdrojové kódy
+  data/grafy/               → Grafové soubory (.tg)
+  output/vykreslene_grafy/  → Vykreslené PNG obrázky
+  docs/                     → Dokumentace
+  tests/                    → Testy
+  tools/                    → Pomocné nástroje
+
+══════════════════════════════════════════════════════════════
+
+📖 DOKUMENTACE:
+
+  README.md                 → Přehled projektu
+  docs/QUICKSTART.md        → Rychlý návod (Linux/Mac)
+  docs/WINDOWS.md           → Návod pro Windows
+  docs/INTERAKTIVNI_MATICE.md → Práce s maticemi
+
+══════════════════════════════════════════════════════════════
+
+💡 PŘÍKLADY:
+
+  # Interaktivní menu:
+  ./analyze.sh                              (Linux/Mac)
+  analyze.bat                               (Windows)
+
+  # Přímé spuštění:
+  ./bin/analyze_properties.sh data/grafy/02.tg A B
+  bin\analyze_properties.bat data\grafy\02.tg A B
+
+  # Matice - interaktivní výběr:
+  ./bin/analyze_matrices.sh data/grafy/01.tg
+  bin\analyze_matrices.bat data\grafy\01.tg
+
+  # Testy (přímé spuštění):
+  ./tests/test_interactive_matrix.sh
+  tests\test_interactive_matrix.bat
+
+══════════════════════════════════════════════════════════════
+
+🆘 POMOC:
+
+  Nefunguje?           → docs/QUICKSTART.md
+  Windows?             → docs/WINDOWS.md
+  Otázky k maticím?    → docs/INTERAKTIVNI_MATICE.md
+  Technické detaily?   → docs/DOKUMENTACE.md
+
+══════════════════════════════════════════════════════════════
+

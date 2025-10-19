@@ -28,7 +28,7 @@ source "$PROJECT_DIR/venv/bin/activate"
 # Menu
 echo "Vyberte akci:"
 echo "  1) Analýza vlastností grafu + uzly"
-echo "  2) Analýza matic"
+echo "  2) Analýza matic (interaktivní)"
 echo "  3) Kompletní analýza"
 echo ""
 read -p "Volba (1-3): " choice
@@ -70,7 +70,7 @@ case $choice in
         fi
         ;;
     2)
-        # Analýza matic
+        # Analýza matic (interaktivní)
         python3 "$PROJECT_DIR/scripts/analyze_matrices.py" "$PROJECT_DIR/$filepath"
         ;;
     3)

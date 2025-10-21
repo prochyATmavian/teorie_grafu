@@ -57,18 +57,18 @@ rozeznavac_grafu/
 
 ## 🚀 Rychlý start
 
-### Linux / Mac
+### 🆕 Hlavní interaktivní program (DOPORUČENO)
 
+#### Linux / Mac
 ```bash
 # 1. Instalace
 bash tools/setup_venv.sh
 
 # 2. Spuštění
-./analyze.sh
+./start.sh
 ```
 
-### Windows
-
+#### Windows
 ```cmd
 REM 1. Instalace
 python -m venv venv
@@ -77,6 +77,29 @@ pip install -r requirements.txt
 deactivate
 
 REM 2. Spuštění
+start.bat
+```
+
+**Nový program `main.py`** nabízí:
+- Jeden while cyklus s menu
+- Analýza vlastností grafu, uzlů a hran
+- Všechny matice s dotazováním pomocí názvů
+- Vzdálenosti u sousedů/předchůdců/následníků
+- Vlastnosti v češtině s barevným kódováním (zelená/červená)
+
+**Dokumentace:** [docs/MAIN_PROGRAM.md](docs/MAIN_PROGRAM.md)
+
+---
+
+### Původní skripty
+
+#### Linux / Mac
+```bash
+./analyze.sh
+```
+
+#### Windows
+```cmd
 analyze.bat
 ```
 
@@ -122,6 +145,25 @@ REM Kompletní analýza
 bin\run.bat data\grafy\02.tg A B
 ```
 
+## ✨ Nová funkce: Přístup k maticím pomocí názvů
+
+Od verze 2.0 můžete přistupovat k prvkům matic pomocí **názvů uzlů a hran**:
+
+```python
+from src.matrices import MatrixBuilder
+
+builder = MatrixBuilder(graph)
+adj_matrix = builder.adjacency_matrix()
+
+# Nové API - použití názvů uzlů
+value = adj_matrix['A']['B']  # Hrana z A do B
+
+# Staré API - stále funguje
+value = adj_matrix[0][1]      # Číselné indexy
+```
+
+**Více informací:** [docs/NAMED_MATRICES.md](docs/NAMED_MATRICES.md) | `python3 demo_named_matrices.py`
+
 ## 📚 Dokumentace
 
 Podrobná dokumentace je k dispozici ve složce `docs/`:
@@ -129,6 +171,7 @@ Podrobná dokumentace je k dispozici ve složce `docs/`:
 - **[POUZITI.md](docs/POUZITI.md)** - Detailní návod k použití s příklady
 - **[DOKUMENTACE.md](docs/DOKUMENTACE.md)** - Kompletní technická dokumentace
 - **[INSTALACE_VENV.md](docs/INSTALACE_VENV.md)** - Podrobný návod na instalaci
+- **[NAMED_MATRICES.md](docs/NAMED_MATRICES.md)** - 🆕 Přístup k maticím pomocí názvů
 
 ## 🔧 Moduly
 
@@ -153,6 +196,8 @@ Třída `MatrixBuilder` pro vytváření:
 - Znaménková matice
 - Matice incidence
 - Matice délek (Floyd-Warshall)
+
+**Nově:** Třída `NamedMatrix` pro přístup pomocí názvů uzlů/hran
 
 ### `src/visualizer.py`
 Nástroje pro vizualizaci grafů:

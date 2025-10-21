@@ -8,6 +8,131 @@ g) tabulka incidentních hran, h) seznam sousedů, i) seznam uzlů a hran
 """
 
 
+class NamedMatrix:
+    """
+    Wrapper pro matici umožňující indexování pomocí názvů uzlů/hran.
+    
+    Použití:
+        matrix = NamedMatrix(data, row_labels, col_labels)
+        value = matrix['A']['B']  # Přístup pomocí názvů
+        value = matrix[0][1]      # Přístup pomocí indexů stále funguje
+    """
+    
+    def __init__(self, data, row_labels=None, col_labels=None):
+        """
+        Args:
+            data (list): 2D seznam s daty matice
+            row_labels (list): Seznam popisků řádků (např. názvy uzlů)
+            col_labels (list): Seznam popisků sloupců (např. názvy uzlů/hran)
+        """
+        self._data = data
+        self._row_labels = row_labels if row_labels else []
+        self._col_labels = col_labels if col_labels else []
+        
+        # Vytvoříme mapování název -> index
+        self._row_index = {label: i for i, label in enumerate(self._row_labels)}
+        self._col_index = {label: i for i, label in enumerate(self._col_labels)}
+    
+    def __getitem__(self, key):
+        """
+        Přístup k matici pomocí názvu nebo indexu.
+        
+        Args:
+            key: Může být int (číselný index) nebo str (název uzlu/hrany)
+            
+        Returns:
+            NamedMatrixRow pro další indexování
+        """
+        if isinstance(key, int):
+            # Číselný index
+            row_idx = key
+        elif isinstance(key, str):
+            # Název uzlu
+            if key not in self._row_index:
+                raise KeyError(f"Řádek '{key}' neexistuje v matici. Dostupné: {list(self._row_index.keys())}")
+            row_idx = self._row_index[key]
+        else:
+            raise TypeError(f"Index musí být int nebo str, ne {type(key)}")
+        
+        return NamedMatrixRow(self._data[row_idx], self._col_index)
+    
+    def get(self, row, col):
+        """
+        Získá hodnotu na pozici [row][col].
+        
+        Args:
+            row: Index nebo název řádku
+            col: Index nebo název sloupce
+            
+        Returns:
+            Hodnota na dané pozici
+        """
+        return self[row][col]
+    
+    def raw(self):
+        """Vrací surová data jako 2D seznam."""
+        return self._data
+    
+    def row_labels(self):
+        """Vrací popisky řádků."""
+        return self._row_labels
+    
+    def col_labels(self):
+        """Vrací popisky sloupců."""
+        return self._col_labels
+    
+    def __len__(self):
+        """Počet řádků."""
+        return len(self._data)
+    
+    def __repr__(self):
+        return f"NamedMatrix({len(self._data)}×{len(self._data[0]) if self._data else 0})"
+    
+    def __str__(self):
+        """Textová reprezentace matice."""
+        lines = [f"{self.__repr__()}"]
+        if self._row_labels:
+            lines.append(f"Řádky: {self._row_labels}")
+        if self._col_labels:
+            lines.append(f"Sloupce: {self._col_labels}")
+        return "\n".join(lines)
+
+
+class NamedMatrixRow:
+    """Helper třída pro řádek matice - umožňuje druhé indexování."""
+    
+    def __init__(self, row_data, col_index):
+        """
+        Args:
+            row_data (list): Data řádku
+            col_index (dict): Mapování název -> index sloupce
+        """
+        self._row_data = row_data
+        self._col_index = col_index
+    
+    def __getitem__(self, key):
+        """
+        Přístup k prvku řádku.
+        
+        Args:
+            key: Může být int (číselný index) nebo str (název sloupce)
+            
+        Returns:
+            Hodnota na dané pozici
+        """
+        if isinstance(key, int):
+            # Číselný index
+            return self._row_data[key]
+        elif isinstance(key, str):
+            # Název sloupce
+            if key not in self._col_index:
+                raise KeyError(f"Sloupec '{key}' neexistuje v matici. Dostupné: {list(self._col_index.keys())}")
+            col_idx = self._col_index[key]
+            return self._row_data[col_idx]
+        else:
+            raise TypeError(f"Index musí být int nebo str, ne {type(key)}")
+
+
 class MatrixBuilder:
     """Třída pro sestavování matic a seznamů grafů."""
     
@@ -27,7 +152,7 @@ class MatrixBuilder:
         Pro ohodnocený graf můžeme použít váhy.
         
         Returns:
-            tuple: (matice, seznam uzlů)
+            NamedMatrix: Matice s indexováním pomocí názvů uzlů
         """
         n = len(self.node_list)
         matrix = [[0] * n for _ in range(n)]
@@ -47,7 +172,7 @@ class MatrixBuilder:
                 if i != j:  # Pokud není smyčka
                     matrix[j][i] += 1
         
-        return matrix, self.node_list
+        return NamedMatrix(matrix, self.node_list, self.node_list)
     
     def weighted_adjacency_matrix(self):
         """
@@ -55,7 +180,7 @@ class MatrixBuilder:
         Pro více hran mezi stejnými uzly používáme součet vah.
         
         Returns:
-            tuple: (matice, seznam uzlů)
+            NamedMatrix: Matice s indexováním pomocí názvů uzlů
         """
         n = len(self.node_list)
         matrix = [[0] * n for _ in range(n)]
@@ -74,7 +199,7 @@ class MatrixBuilder:
                 if i != j:
                     matrix[j][i] += weight
         
-        return matrix, self.node_list
+        return NamedMatrix(matrix, self.node_list, self.node_list)
     
     def signed_matrix(self):
         """
@@ -82,14 +207,14 @@ class MatrixBuilder:
         A[i][j] = 1 pokud existuje hrana, 0 pokud neexistuje.
         
         Returns:
-            tuple: (matice, seznam uzlů)
+            NamedMatrix: Matice s indexováním pomocí názvů uzlů
         """
-        adj_matrix, nodes = self.adjacency_matrix()
-        n = len(nodes)
+        adj_matrix = self.adjacency_matrix()
+        n = len(self.node_list)
         
         signed = [[1 if adj_matrix[i][j] > 0 else 0 for j in range(n)] for i in range(n)]
         
-        return signed, nodes
+        return NamedMatrix(signed, self.node_list, self.node_list)
     
     def matrix_power(self, matrix, power):
         """
@@ -148,13 +273,14 @@ class MatrixBuilder:
             max_power (int): Maximální mocnina k výpočtu
             
         Returns:
-            dict: {mocnina: (matice, seznam uzlů)}
+            dict: {mocnina: NamedMatrix}
         """
-        adj_matrix, nodes = self.adjacency_matrix()
+        adj_matrix = self.adjacency_matrix()
         
         powers = {}
         for p in range(2, max_power + 1):
-            powers[p] = (self.matrix_power(adj_matrix, p), nodes)
+            power_matrix = self.matrix_power(adj_matrix.raw(), p)
+            powers[p] = NamedMatrix(power_matrix, self.node_list, self.node_list)
         
         return powers
     
@@ -172,7 +298,7 @@ class MatrixBuilder:
         - M[i][j] = 2 pokud hrana j je smyčka na uzlu i
         
         Returns:
-            tuple: (matice, seznam uzlů, seznam hran)
+            NamedMatrix: Matice s indexováním pomocí názvů uzlů (řádky) a hran (sloupce)
         """
         n = len(self.node_list)
         
@@ -182,6 +308,9 @@ class MatrixBuilder:
             self.graph.edges_list,
             key=lambda e: (e.label is None, e.label if e.label else "")
         )
+        
+        # Vytvoříme popisky pro hrany
+        edge_labels = [edge.label if edge.label else f"e{i}" for i, edge in enumerate(edges_sorted)]
         
         m = len(edges_sorted)
         matrix = [[0] * m for _ in range(n)]
@@ -210,7 +339,7 @@ class MatrixBuilder:
                     matrix[i][j] = 1
                     matrix[j_idx][j] = 1
         
-        return matrix, self.node_list, edges_sorted
+        return NamedMatrix(matrix, self.node_list, edge_labels)
     
     def distance_matrix(self):
         """
@@ -218,7 +347,7 @@ class MatrixBuilder:
         Používáme Floyd-Warshallův algoritmus.
         
         Returns:
-            tuple: (matice, seznam uzlů)
+            NamedMatrix: Matice s indexováním pomocí názvů uzlů
         """
         n = len(self.node_list)
         INF = float('inf')
@@ -251,14 +380,14 @@ class MatrixBuilder:
                     if dist[i][k] != INF and dist[k][j] != INF:
                         dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
         
-        return dist, self.node_list
+        return NamedMatrix(dist, self.node_list, self.node_list)
     
     def predecessor_matrix(self):
         """
         f) Matice předchůdců - P[i][j] = předchůdce uzlu j na nejkratší cestě z i do j.
         
         Returns:
-            tuple: (matice, seznam uzlů)
+            NamedMatrix: Matice s indexováním pomocí názvů uzlů
         """
         n = len(self.node_list)
         INF = float('inf')
@@ -300,7 +429,7 @@ class MatrixBuilder:
                             dist[i][j] = new_dist
                             pred[i][j] = pred[k][j]
         
-        return pred, self.node_list
+        return NamedMatrix(pred, self.node_list, self.node_list)
     
     def incident_edges_table(self):
         """

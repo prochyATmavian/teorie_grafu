@@ -24,6 +24,15 @@ from src.matrices import MatrixBuilder
 
 def print_matrix(matrix, row_labels=None, col_labels=None, title="Matice", show_dimensions=True):
     """Vypíše matici v čitelném formátu."""
+    # Pokud je matrix NamedMatrix, získáme surová data
+    from src.matrices import NamedMatrix
+    if isinstance(matrix, NamedMatrix):
+        if row_labels is None:
+            row_labels = matrix.row_labels()
+        if col_labels is None:
+            col_labels = matrix.col_labels()
+        matrix = matrix.raw()
+    
     rows = len(matrix)
     cols = len(matrix[0]) if matrix else 0
     
@@ -65,21 +74,59 @@ def get_matrix_element(matrix, row, col, row_labels=None, col_labels=None):
     Vrátí prvek matice na pozici [řádek][sloupec].
     
     Args:
-        matrix: Matice
-        row (int): Index řádku (od 0)
-        col (int): Index sloupce (od 0)
+        matrix: Matice (může být NamedMatrix nebo 2D seznam)
+        row: Index řádku (od 0) nebo název uzlu/hrany
+        col: Index sloupce (od 0) nebo název uzlu/hrany
         row_labels: Seznam popisků řádků (volitelné)
         col_labels: Seznam popisků sloupců (volitelné)
         
     Returns:
         Hodnota prvku nebo None pokud index není platný
     """
-    if row < 0 or row >= len(matrix):
-        return None
-    if col < 0 or col >= len(matrix[row]):
-        return None
+    from src.matrices import NamedMatrix
     
-    value = matrix[row][col]
+    # Pokud je matrix NamedMatrix, můžeme použít názvy přímo
+    if isinstance(matrix, NamedMatrix):
+        if row_labels is None:
+            row_labels = matrix.row_labels()
+        if col_labels is None:
+            col_labels = matrix.col_labels()
+        
+        try:
+            value = matrix[row][col]
+            
+            # Zjistíme indexy pro zobrazení
+            if isinstance(row, str):
+                row_label = row
+                row_index = row_labels.index(row) if row in row_labels else -1
+            else:
+                row_index = row
+                row_label = row_labels[row] if row_labels and row < len(row_labels) else str(row)
+            
+            if isinstance(col, str):
+                col_label = col
+                col_index = col_labels.index(col) if col in col_labels else -1
+            else:
+                col_index = col
+                col_label = col_labels[col] if col_labels and col < len(col_labels) else str(col)
+            
+        except (KeyError, IndexError, TypeError) as e:
+            return None
+    else:
+        # Standardní 2D seznam
+        if not isinstance(row, int) or not isinstance(col, int):
+            return None
+        
+        if row < 0 or row >= len(matrix):
+            return None
+        if col < 0 or col >= len(matrix[row]):
+            return None
+        
+        value = matrix[row][col]
+        row_index = row
+        col_index = col
+        row_label = row_labels[row] if row_labels and row < len(row_labels) else str(row)
+        col_label = col_labels[col] if col_labels and col < len(col_labels) else str(col)
     
     # Formátování hodnoty
     if value == float('inf'):
@@ -91,14 +138,11 @@ def get_matrix_element(matrix, row, col, row_labels=None, col_labels=None):
     else:
         value_str = str(value)
     
-    row_label = row_labels[row] if row_labels and row < len(row_labels) else str(row)
-    col_label = col_labels[col] if col_labels and col < len(col_labels) else str(col)
-    
     return {
         'value': value,
         'value_str': value_str,
-        'row_index': row,
-        'col_index': col,
+        'row_index': row_index,
+        'col_index': col_index,
         'row_label': row_label,
         'col_label': col_label
     }
@@ -150,52 +194,52 @@ def analyze_matrices(filepath, matrix_index=None):
     print("=" * 60)
     
     builder = MatrixBuilder(graph)
+    nodes_list = sorted(graph.nodes.keys())
     
     # Matice sousednosti
-    adj_matrix, nodes_list = builder.adjacency_matrix()
+    adj_matrix = builder.adjacency_matrix()
     if matrix_index:
         row, col = matrix_index
-        print_matrix_element(adj_matrix, row, col, nodes_list, nodes_list, "a) Matice sousednosti")
+        print_matrix_element(adj_matrix, row, col, None, None, "a) Matice sousednosti")
     else:
-        print_matrix(adj_matrix, nodes_list, nodes_list, "a) Matice sousednosti")
+        print_matrix(adj_matrix, None, None, "a) Matice sousednosti")
     
     # Znaménková matice
-    sign_matrix, _ = builder.signed_matrix()
+    sign_matrix = builder.signed_matrix()
     if matrix_index:
         row, col = matrix_index
-        print_matrix_element(sign_matrix, row, col, nodes_list, nodes_list, "b) Znaménková matice")
+        print_matrix_element(sign_matrix, row, col, None, None, "b) Znaménková matice")
     else:
-        print_matrix(sign_matrix, nodes_list, nodes_list, "b) Znaménková matice")
+        print_matrix(sign_matrix, None, None, "b) Znaménková matice")
     
     # Mocniny matice sousednosti
     if len(nodes_list) <= 10:  # Pouze pro menší grafy
         powers = builder.adjacency_matrix_powers(3)
-        for power, (matrix, _) in powers.items():
+        for power, matrix in powers.items():
             if matrix_index:
                 row, col = matrix_index
-                print_matrix_element(matrix, row, col, nodes_list, nodes_list, f"c) Matice sousednosti^{power}")
+                print_matrix_element(matrix, row, col, None, None, f"c) Matice sousednosti^{power}")
             else:
-                print_matrix(matrix, nodes_list, nodes_list, f"c) Matice sousednosti^{power}")
+                print_matrix(matrix, None, None, f"c) Matice sousednosti^{power}")
     else:
         if not matrix_index:
             print(f"\nc) Matice sousednosti^n: Vynecháno (graf má {len(nodes_list)} uzlů > 10)")
     
     # Matice incidence
-    inc_matrix, nodes_inc, edges_inc = builder.incidence_matrix()
-    edge_labels = [edge.label if edge.label else f"e{i}" for i, edge in enumerate(edges_inc)]
+    inc_matrix = builder.incidence_matrix()
     if matrix_index:
         row, col = matrix_index
-        print_matrix_element(inc_matrix, row, col, nodes_inc, edge_labels, "d) Matice incidence")
+        print_matrix_element(inc_matrix, row, col, None, None, "d) Matice incidence")
     else:
-        print_matrix(inc_matrix, nodes_inc, edge_labels, "d) Matice incidence")
+        print_matrix(inc_matrix, None, None, "d) Matice incidence")
     
     # Matice délek
-    dist_matrix, _ = builder.distance_matrix()
+    dist_matrix = builder.distance_matrix()
     if matrix_index:
         row, col = matrix_index
-        print_matrix_element(dist_matrix, row, col, nodes_list, nodes_list, "e) Matice délek (Floyd-Warshall)")
+        print_matrix_element(dist_matrix, row, col, None, None, "e) Matice délek (Floyd-Warshall)")
     else:
-        print_matrix(dist_matrix, nodes_list, nodes_list, "e) Matice délek (Floyd-Warshall)")
+        print_matrix(dist_matrix, None, None, "e) Matice délek (Floyd-Warshall)")
     
     if not matrix_index:
         # Seznam sousedů
@@ -271,49 +315,48 @@ def interactive_matrix_selection(filepath):
     
     # Sestavení a zobrazení vybrané matice
     if choice == 'a' or choice == '*':
-        adj_matrix, nodes_list = builder.adjacency_matrix()
+        adj_matrix = builder.adjacency_matrix()
         if matrix_index:
             row, col = matrix_index
-            print_matrix_element(adj_matrix, row, col, nodes_list, nodes_list, "a) Matice sousednosti")
+            print_matrix_element(adj_matrix, row, col, None, None, "a) Matice sousednosti")
         else:
-            print_matrix(adj_matrix, nodes_list, nodes_list, "a) Matice sousednosti")
+            print_matrix(adj_matrix, None, None, "a) Matice sousednosti")
     
     if choice == 'b' or choice == '*':
-        sign_matrix, _ = builder.signed_matrix()
+        sign_matrix = builder.signed_matrix()
         if matrix_index:
             row, col = matrix_index
-            print_matrix_element(sign_matrix, row, col, nodes_list, nodes_list, "b) Znaménková matice")
+            print_matrix_element(sign_matrix, row, col, None, None, "b) Znaménková matice")
         else:
-            print_matrix(sign_matrix, nodes_list, nodes_list, "b) Znaménková matice")
+            print_matrix(sign_matrix, None, None, "b) Znaménková matice")
     
     if choice == 'c' or choice == '*':
         if len(nodes_list) <= 10:
             powers = builder.adjacency_matrix_powers(3)
-            for power, (matrix, _) in powers.items():
+            for power, matrix in powers.items():
                 if matrix_index:
                     row, col = matrix_index
-                    print_matrix_element(matrix, row, col, nodes_list, nodes_list, f"c) Matice sousednosti^{power}")
+                    print_matrix_element(matrix, row, col, None, None, f"c) Matice sousednosti^{power}")
                 else:
-                    print_matrix(matrix, nodes_list, nodes_list, f"c) Matice sousednosti^{power}")
+                    print_matrix(matrix, None, None, f"c) Matice sousednosti^{power}")
         else:
             print(f"\nc) Matice sousednosti^n: Vynecháno (graf má {len(nodes_list)} uzlů > 10)")
     
     if choice == 'd' or choice == '*':
-        inc_matrix, nodes_inc, edges_inc = builder.incidence_matrix()
-        edge_labels = [edge.label if edge.label else f"e{i}" for i, edge in enumerate(edges_inc)]
+        inc_matrix = builder.incidence_matrix()
         if matrix_index:
             row, col = matrix_index
-            print_matrix_element(inc_matrix, row, col, nodes_inc, edge_labels, "d) Matice incidence")
+            print_matrix_element(inc_matrix, row, col, None, None, "d) Matice incidence")
         else:
-            print_matrix(inc_matrix, nodes_inc, edge_labels, "d) Matice incidence")
+            print_matrix(inc_matrix, None, None, "d) Matice incidence")
     
     if choice == 'e' or choice == '*':
-        dist_matrix, _ = builder.distance_matrix()
+        dist_matrix = builder.distance_matrix()
         if matrix_index:
             row, col = matrix_index
-            print_matrix_element(dist_matrix, row, col, nodes_list, nodes_list, "e) Matice délek (Floyd-Warshall)")
+            print_matrix_element(dist_matrix, row, col, None, None, "e) Matice délek (Floyd-Warshall)")
         else:
-            print_matrix(dist_matrix, nodes_list, nodes_list, "e) Matice délek (Floyd-Warshall)")
+            print_matrix(dist_matrix, None, None, "e) Matice délek (Floyd-Warshall)")
     
     if choice == 'h' or choice == '*':
         if not matrix_index:

@@ -108,22 +108,38 @@ def print_node_info(graph, node_id):
     print(f"\nINFORMACE O UZLU: {node_id}")
     print("-" * 40)
     
-    print(f"k) U+({node_id}) - Následníci: {{{', '.join(graph.get_successors(node_id))}}}")
-    print(f"l) U-({node_id}) - Předchůdci: {{{', '.join(graph.get_predecessors(node_id))}}}")
-    print(f"m) U({node_id}) - Sousedé: {{{', '.join(sorted(graph.get_all_neighbors(node_id)))}}}")
-    
+    # Následníci (výstupní okolí)
     out_edges = graph.get_outgoing_edges(node_id)
+    print(f"k) U+({node_id}) - Následníci: {{{', '.join(graph.get_successors(node_id))}}}")
+    print(f"   Hrany výstupního okolí:")
+    for edge in out_edges:
+        print(f"     {edge}")
+    
+    # Předchůdci (vstupní okolí)
+    in_edges = graph.get_incoming_edges(node_id)
+    print(f"l) U-({node_id}) - Předchůdci: {{{', '.join(graph.get_predecessors(node_id))}}}")
+    print(f"   Hrany vstupního okolí:")
+    for edge in in_edges:
+        print(f"     {edge}")
+    
+    # Sousedé (celkové okolí)
+    incident = graph.get_incident_edges(node_id)
+    print(f"m) U({node_id}) - Sousedé: {{{', '.join(sorted(graph.get_all_neighbors(node_id)))}}}")
+    print(f"   Hrany okolí:")
+    for edge in incident:
+        print(f"     {edge}")
+    
     print(f"n) H+({node_id}) - Výstupní hrany: {len(out_edges)}")
     for edge in out_edges:
         print(f"     {edge}")
     
-    in_edges = graph.get_incoming_edges(node_id)
     print(f"o) H-({node_id}) - Vstupní hrany: {len(in_edges)}")
     for edge in in_edges:
         print(f"     {edge}")
     
-    incident = graph.get_incident_edges(node_id)
     print(f"p) H({node_id}) - Okolí (všechny hrany): {len(incident)}")
+    for edge in incident:
+        print(f"     {edge}")
     
     print(f"q) d+({node_id}) - Výstupní stupeň: {graph.get_out_degree(node_id)}")
     print(f"r) d-({node_id}) - Vstupní stupeň: {graph.get_in_degree(node_id)}")

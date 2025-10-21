@@ -209,6 +209,11 @@ class GraphInteractive:
             all_neighbors = self.graph.get_all_neighbors(node)
             successors = self.graph.get_successors(node)
             
+            # Získáme hrany pro každé okolí
+            in_edges = self.graph.get_incoming_edges(node)
+            out_edges = self.graph.get_outgoing_edges(node)
+            incident_edges_all = self.graph.get_incident_edges(node)
+            
             print(f"\nPředchůdci U-({node}) ({len(predecessors)}):")
             if predecessors:
                 for pred in sorted(predecessors):
@@ -220,6 +225,12 @@ class GraphInteractive:
                             print(f"  - {pred} (vzdálenost: {distance})")
                     else:
                         print(f"  - {pred}")
+                print(f"  Hrany vstupního okolí:")
+                for edge in in_edges:
+                    edge_str = f"{edge.node1} → {edge.node2}" if edge.directed else f"{edge.node1} - {edge.node2}"
+                    if edge.weight is not None:
+                        edge_str += f" (váha: {edge.weight})"
+                    print(f"    {edge_str}")
             else:
                 print("  (žádní)")
             
@@ -235,6 +246,12 @@ class GraphInteractive:
                             print(f"  - {succ} (vzdálenost: {distance})")
                     else:
                         print(f"  - {succ}")
+                print(f"  Hrany výstupního okolí:")
+                for edge in out_edges:
+                    edge_str = f"{edge.node1} → {edge.node2}" if edge.directed else f"{edge.node1} - {edge.node2}"
+                    if edge.weight is not None:
+                        edge_str += f" (váha: {edge.weight})"
+                    print(f"    {edge_str}")
             else:
                 print("  (žádní)")
             
@@ -253,6 +270,12 @@ class GraphInteractive:
                             print(f"  - {neighbor} (vzdálenost: {distance})")
                     else:
                         print(f"  - {neighbor}")
+                print(f"  Hrany okolí:")
+                for edge in incident_edges_all:
+                    edge_str = f"{edge.node1} → {edge.node2}" if edge.directed else f"{edge.node1} - {edge.node2}"
+                    if edge.weight is not None:
+                        edge_str += f" (váha: {edge.weight})"
+                    print(f"    {edge_str}")
             else:
                 print("  (žádní)")
             
